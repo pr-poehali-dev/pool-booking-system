@@ -11,6 +11,13 @@ import Icon from '@/components/ui/icon';
 const Index = () => {
   const [selectedTime, setSelectedTime] = useState('');
   const [selectedDate, setSelectedDate] = useState('');
+  const [selectedLane, setSelectedLane] = useState('');
+  const [selectedService, setSelectedService] = useState('');
+  const [bookingData, setBookingData] = useState({
+    name: '',
+    phone: '',
+    email: ''
+  });
 
   const timeSlots = [
     { time: '06:00', available: true },
@@ -31,32 +38,53 @@ const Index = () => {
     { time: '21:00', available: true },
   ];
 
+  const lanes = [
+    { id: 1, name: 'Дорожка 1', type: 'Для начинающих', available: true },
+    { id: 2, name: 'Дорожка 2', type: 'Для начинающих', available: true },
+    { id: 3, name: 'Дорожка 3', type: 'Средний уровень', available: true },
+    { id: 4, name: 'Дорожка 4', type: 'Средний уровень', available: false },
+    { id: 5, name: 'Дорожка 5', type: 'Профессиональная', available: true },
+    { id: 6, name: 'Дорожка 6', type: 'Профессиональная', available: true },
+  ];
+
   const services = [
     {
       title: 'Свободное плавание',
       description: 'Плавание в собственном темпе без ограничений',
       price: '500₽/час',
-      icon: 'Waves'
+      icon: 'Waves',
+      duration: '60 мин'
     },
     {
       title: 'Аквааэробика',
       description: 'Групповые занятия в воде с инструктором',
       price: '800₽/занятие',
-      icon: 'Users'
+      icon: 'Users',
+      duration: '45 мин'
     },
     {
       title: 'Персональная тренировка',
       description: 'Индивидуальные занятия с тренером по плаванию',
       price: '2000₽/час',
-      icon: 'User'
+      icon: 'User',
+      duration: '60 мин'
     },
     {
       title: 'Аква-терапия',
       description: 'Лечебные процедуры в воде под контролем специалиста',
       price: '1500₽/сеанс',
-      icon: 'Heart'
+      icon: 'Heart',
+      duration: '40 мин'
     }
   ];
+
+  const handleBooking = () => {
+    if (!selectedDate || !selectedTime || !selectedLane || !selectedService || !bookingData.name || !bookingData.phone) {
+      alert('Пожалуйста, заполните все поля');
+      return;
+    }
+    alert(`Бронирование подтверждено!\n\nДата: ${selectedDate}\nВремя: ${selectedTime}\nДорожка: ${selectedLane}\nУслуга: ${selectedService}\nИмя: ${bookingData.name}\nТелефон: ${bookingData.phone}`);
+  };
 
   const priceList = [
     { service: 'Разовое посещение', price: '500₽' },
@@ -69,16 +97,16 @@ const Index = () => {
 
   const galleryImages = [
     {
-      src: '/img/c34efeb6-6e0a-4099-936f-e58369d596ce.jpg',
-      alt: 'Главный бассейн'
+      src: '/img/46e95222-ba2f-47c4-846f-798030805bf4.jpg',
+      alt: 'Профессиональные дорожки'
     },
     {
-      src: '/img/d0c5a50c-3aa0-473b-978f-53aeb822e5e3.jpg',
-      alt: 'Аквааэробика'
+      src: '/img/432e0d86-9504-42bf-9036-65f7ae5ee686.jpg',
+      alt: 'Групповые занятия'
     },
     {
-      src: '/img/25f68859-397f-4d6f-93aa-17bab2d13091.jpg',
-      alt: 'Зона отдыха'
+      src: '/img/c617950a-0c54-4d19-b8c4-6735456d4c0c.jpg',
+      alt: 'Зона релаксации'
     }
   ];
 
@@ -94,15 +122,14 @@ const Index = () => {
             </div>
             <div className="hidden md:flex items-center space-x-8">
               <a href="#home" className="text-foreground hover:text-primary transition-colors">Главная</a>
-              <a href="#schedule" className="text-foreground hover:text-primary transition-colors">Расписание</a>
+              <a href="#booking" className="text-foreground hover:text-primary transition-colors">Бронирование</a>
               <a href="#services" className="text-foreground hover:text-primary transition-colors">Услуги</a>
-              <a href="#prices" className="text-foreground hover:text-primary transition-colors">Цены</a>
               <a href="#gallery" className="text-foreground hover:text-primary transition-colors">Галерея</a>
-              <a href="#contacts" className="text-foreground hover:text-primary transition-colors">Контакты</a>
+              <a href="#contact" className="text-foreground hover:text-primary transition-colors">Контакты</a>
             </div>
             <Button className="bg-primary hover:bg-primary/90">
               <Icon name="Phone" size={16} className="mr-2" />
-              Связаться
+              +7 (495) 123-45-67
             </Button>
           </div>
         </div>
@@ -118,10 +145,14 @@ const Index = () => {
               <br />для вашего здоровья
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground mb-8 leading-relaxed">
-              Профессиональные дорожки, чистая вода и комфортная атмосфера для плавания и фитнеса
+              Профессиональные дорожки, чистая вода и удобная система бронирования онлайн
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-primary hover:bg-primary/90 text-lg px-8 py-4">
+              <Button 
+                size="lg" 
+                className="bg-primary hover:bg-primary/90 text-lg px-8 py-4"
+                onClick={() => document.getElementById('booking')?.scrollIntoView({ behavior: 'smooth' })}
+              >
                 <Icon name="Calendar" size={20} className="mr-2" />
                 Забронировать дорожку
               </Button>
@@ -154,8 +185,17 @@ const Index = () => {
                   <CardDescription>{service.description}</CardDescription>
                 </CardHeader>
                 <CardContent className="text-center">
-                  <div className="text-2xl font-bold text-primary mb-4">{service.price}</div>
-                  <Button className="w-full">Записаться</Button>
+                  <div className="text-2xl font-bold text-primary mb-2">{service.price}</div>
+                  <div className="text-sm text-muted-foreground mb-4">Продолжительность: {service.duration}</div>
+                  <Button 
+                    className="w-full"
+                    onClick={() => {
+                      setSelectedService(service.title);
+                      document.getElementById('booking')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                  >
+                    Записаться
+                  </Button>
                 </CardContent>
               </Card>
             ))}
@@ -164,89 +204,193 @@ const Index = () => {
       </section>
 
       {/* Booking Section */}
-      <section id="schedule" className="py-16 bg-secondary/50">
+      <section id="booking" className="py-16 bg-secondary/30">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold mb-4">Бронирование дорожки</h2>
             <p className="text-xl text-muted-foreground">
-              Выберите удобное время для плавания
+              Выберите удобное время и забронируйте дорожку онлайн
             </p>
           </div>
-          <div className="max-w-4xl mx-auto">
-            <Card className="p-6">
-              <div className="grid md:grid-cols-2 gap-8">
-                <div className="space-y-4">
-                  <div>
-                    <Label htmlFor="date">Выберите дату</Label>
-                    <Input 
-                      id="date" 
-                      type="date" 
-                      value={selectedDate}
-                      onChange={(e) => setSelectedDate(e.target.value)}
-                      className="mt-2"
-                    />
+          
+          <div className="max-w-6xl mx-auto">
+            <Card className="p-8">
+              <div className="grid lg:grid-cols-3 gap-8">
+                
+                {/* Booking Form */}
+                <div className="lg:col-span-2 space-y-6">
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div>
+                      <Label htmlFor="date" className="text-base font-semibold">Выберите дату</Label>
+                      <Input 
+                        id="date" 
+                        type="date" 
+                        value={selectedDate}
+                        onChange={(e) => setSelectedDate(e.target.value)}
+                        className="mt-2 h-12"
+                        min={new Date().toISOString().split('T')[0]}
+                      />
+                    </div>
+                    
+                    <div>
+                      <Label className="text-base font-semibold">Тип занятия</Label>
+                      <Select value={selectedService} onValueChange={setSelectedService}>
+                        <SelectTrigger className="mt-2 h-12">
+                          <SelectValue placeholder="Выберите услугу" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {services.map((service, index) => (
+                            <SelectItem key={index} value={service.title}>
+                              <div className="flex items-center">
+                                <Icon name={service.icon} size={16} className="mr-2" />
+                                {service.title} - {service.price}
+                              </div>
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
+
+                  {/* Time Selection */}
                   <div>
-                    <Label htmlFor="service">Тип занятия</Label>
-                    <Select>
-                      <SelectTrigger className="mt-2">
-                        <SelectValue placeholder="Выберите услугу" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {services.map((service, index) => (
-                          <SelectItem key={index} value={service.title.toLowerCase()}>
-                            {service.title}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <Label className="text-base font-semibold">Доступное время</Label>
+                    <div className="grid grid-cols-4 md:grid-cols-6 gap-2 mt-3">
+                      {timeSlots.map((slot, index) => (
+                        <Button
+                          key={index}
+                          variant={selectedTime === slot.time ? "default" : "outline"}
+                          size="sm"
+                          disabled={!slot.available}
+                          onClick={() => setSelectedTime(slot.time)}
+                          className={`h-12 ${!slot.available ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        >
+                          {slot.time}
+                        </Button>
+                      ))}
+                    </div>
+                    <div className="flex items-center justify-between mt-4 text-sm text-muted-foreground">
+                      <div className="flex items-center">
+                        <div className="w-3 h-3 bg-primary rounded mr-2"></div>
+                        Доступно
+                      </div>
+                      <div className="flex items-center">
+                        <div className="w-3 h-3 bg-muted rounded mr-2"></div>
+                        Занято
+                      </div>
+                    </div>
                   </div>
+
+                  {/* Lane Selection */}
                   <div>
-                    <Label htmlFor="lane">Номер дорожки</Label>
-                    <Select>
-                      <SelectTrigger className="mt-2">
-                        <SelectValue placeholder="Выберите дорожку" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="1">Дорожка 1</SelectItem>
-                        <SelectItem value="2">Дорожка 2</SelectItem>
-                        <SelectItem value="3">Дорожка 3</SelectItem>
-                        <SelectItem value="4">Дорожка 4</SelectItem>
-                        <SelectItem value="5">Дорожка 5</SelectItem>
-                        <SelectItem value="6">Дорожка 6</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <Label className="text-base font-semibold">Выберите дорожку</Label>
+                    <div className="grid md:grid-cols-2 gap-3 mt-3">
+                      {lanes.map((lane) => (
+                        <Button
+                          key={lane.id}
+                          variant={selectedLane === lane.name ? "default" : "outline"}
+                          disabled={!lane.available}
+                          onClick={() => setSelectedLane(lane.name)}
+                          className={`h-16 flex flex-col items-start p-4 ${!lane.available ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        >
+                          <div className="font-semibold">{lane.name}</div>
+                          <div className="text-xs opacity-70">{lane.type}</div>
+                        </Button>
+                      ))}
+                    </div>
                   </div>
                 </div>
-                <div>
-                  <Label>Доступное время</Label>
-                  <div className="grid grid-cols-4 gap-2 mt-2">
-                    {timeSlots.map((slot, index) => (
-                      <Button
-                        key={index}
-                        variant={selectedTime === slot.time ? "default" : "outline"}
-                        size="sm"
-                        disabled={!slot.available}
-                        onClick={() => setSelectedTime(slot.time)}
-                        className={`${!slot.available ? 'opacity-50 cursor-not-allowed' : ''}`}
-                      >
-                        {slot.time}
-                      </Button>
-                    ))}
-                  </div>
-                  <div className="flex items-center justify-between mt-4 text-sm text-muted-foreground">
-                    <div className="flex items-center">
-                      <div className="w-3 h-3 bg-primary rounded mr-2"></div>
-                      Доступно
-                    </div>
-                    <div className="flex items-center">
-                      <div className="w-3 h-3 bg-muted rounded mr-2"></div>
-                      Занято
-                    </div>
-                  </div>
-                  <Button className="w-full mt-6 bg-primary hover:bg-primary/90">
-                    <Icon name="Calendar" size={16} className="mr-2" />
-                    Забронировать
+
+                {/* Contact Info & Summary */}
+                <div className="space-y-6">
+                  <Card className="p-6 bg-primary/5 border-primary/20">
+                    <CardHeader className="p-0 pb-4">
+                      <CardTitle className="text-lg">Ваши данные</CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-0 space-y-4">
+                      <div>
+                        <Label htmlFor="name">Имя *</Label>
+                        <Input 
+                          id="name" 
+                          placeholder="Ваше имя" 
+                          value={bookingData.name}
+                          onChange={(e) => setBookingData({...bookingData, name: e.target.value})}
+                          className="mt-2"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="phone">Телефон *</Label>
+                        <Input 
+                          id="phone" 
+                          placeholder="+7 (___) ___-__-__" 
+                          value={bookingData.phone}
+                          onChange={(e) => setBookingData({...bookingData, phone: e.target.value})}
+                          className="mt-2"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="email">Email</Label>
+                        <Input 
+                          id="email" 
+                          type="email"
+                          placeholder="your@email.com" 
+                          value={bookingData.email}
+                          onChange={(e) => setBookingData({...bookingData, email: e.target.value})}
+                          className="mt-2"
+                        />
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Booking Summary */}
+                  {(selectedDate || selectedTime || selectedLane || selectedService) && (
+                    <Card className="p-6 bg-accent/5 border-accent/20">
+                      <CardHeader className="p-0 pb-4">
+                        <CardTitle className="text-lg">Детали бронирования</CardTitle>
+                      </CardHeader>
+                      <CardContent className="p-0 space-y-3">
+                        {selectedDate && (
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Дата:</span>
+                            <span className="font-semibold">{selectedDate}</span>
+                          </div>
+                        )}
+                        {selectedTime && (
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Время:</span>
+                            <span className="font-semibold">{selectedTime}</span>
+                          </div>
+                        )}
+                        {selectedLane && (
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Дорожка:</span>
+                            <span className="font-semibold">{selectedLane}</span>
+                          </div>
+                        )}
+                        {selectedService && (
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Услуга:</span>
+                            <span className="font-semibold">{selectedService}</span>
+                          </div>
+                        )}
+                        {selectedService && (
+                          <div className="flex justify-between border-t pt-3">
+                            <span className="text-muted-foreground">Стоимость:</span>
+                            <span className="font-bold text-primary">
+                              {services.find(s => s.title === selectedService)?.price}
+                            </span>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  )}
+
+                  <Button 
+                    className="w-full bg-primary hover:bg-primary/90 h-12 text-lg"
+                    onClick={handleBooking}
+                  >
+                    <Icon name="Calendar" size={20} className="mr-2" />
+                    Подтвердить бронирование
                   </Button>
                 </div>
               </div>
@@ -255,65 +399,59 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Prices Section */}
-      <section id="prices" className="py-16 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold mb-4">Цены на услуги</h2>
-            <p className="text-xl text-muted-foreground">
-              Доступные тарифы для всех категорий посетителей
-            </p>
-          </div>
-          <div className="max-w-3xl mx-auto">
-            <Card className="p-6">
-              <div className="space-y-4">
-                {priceList.map((item, index) => (
-                  <div key={index} className="flex justify-between items-center py-3 border-b border-border last:border-b-0">
-                    <span className="text-lg">{item.service}</span>
-                    <Badge variant="secondary" className="text-lg px-4 py-2 bg-primary/10 text-primary">
-                      {item.price}
-                    </Badge>
-                  </div>
-                ))}
-              </div>
-            </Card>
-          </div>
-        </div>
-      </section>
+
 
       {/* Gallery Section */}
-      <section id="gallery" className="py-16 bg-secondary/50">
+      <section id="gallery" className="py-16 bg-secondary/30">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold mb-4">Галерея</h2>
             <p className="text-xl text-muted-foreground">
-              Посмотрите на наш современный бассейн
+              Посмотрите на наш современный бассейн и оборудование
             </p>
           </div>
           <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            {galleryImages.map((image, index) => (
-              <div key={index} className="group relative overflow-hidden rounded-lg hover:scale-105 transition-transform duration-300">
-                <img 
-                  src={image.src} 
-                  alt={image.alt}
-                  className="w-full h-64 object-cover"
-                />
-                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                  <span className="text-white font-semibold text-lg">{image.alt}</span>
-                </div>
+            <div className="group relative overflow-hidden rounded-lg hover:scale-105 transition-transform duration-300">
+              <img 
+                src="/img/46e95222-ba2f-47c4-846f-798030805bf4.jpg" 
+                alt="Профессиональные дорожки"
+                className="w-full h-64 object-cover"
+              />
+              <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                <span className="text-white font-semibold text-lg">Профессиональные дорожки</span>
               </div>
-            ))}
+            </div>
+            <div className="group relative overflow-hidden rounded-lg hover:scale-105 transition-transform duration-300">
+              <img 
+                src="/img/432e0d86-9504-42bf-9036-65f7ae5ee686.jpg" 
+                alt="Групповые занятия"
+                className="w-full h-64 object-cover"
+              />
+              <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                <span className="text-white font-semibold text-lg">Групповые занятия</span>
+              </div>
+            </div>
+            <div className="group relative overflow-hidden rounded-lg hover:scale-105 transition-transform duration-300">
+              <img 
+                src="/img/c617950a-0c54-4d19-b8c4-6735456d4c0c.jpg" 
+                alt="Зона релаксации"
+                className="w-full h-64 object-cover"
+              />
+              <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                <span className="text-white font-semibold text-lg">Зона релаксации</span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Contacts Section */}
-      <section id="contacts" className="py-16 bg-background">
+      {/* Contact Section */}
+      <section id="contact" className="py-16 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold mb-4">Контакты</h2>
             <p className="text-xl text-muted-foreground">
-              Мы всегда рады вас видеть
+              Мы всегда рады ответить на ваши вопросы
             </p>
           </div>
           <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-8">
@@ -321,7 +459,7 @@ const Index = () => {
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <Icon name="MapPin" size={24} className="mr-3 text-primary" />
-                  Адрес и время работы
+                  Как нас найти
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -329,25 +467,28 @@ const Index = () => {
                   <Icon name="MapPin" size={20} className="mr-3 mt-1 text-muted-foreground" />
                   <div>
                     <p className="font-semibold">г. Москва</p>
-                    <p className="text-muted-foreground">ул. Спортивная, 15</p>
+                    <p className="text-muted-foreground">ул. Спортивная, д. 15</p>
                   </div>
                 </div>
                 <div className="flex items-center">
                   <Icon name="Clock" size={20} className="mr-3 text-muted-foreground" />
                   <div>
-                    <p className="font-semibold">Ежедневно: 6:00 - 23:00</p>
+                    <p className="font-semibold">Режим работы</p>
+                    <p className="text-muted-foreground">Ежедневно: 6:00 - 23:00</p>
                   </div>
                 </div>
                 <div className="flex items-center">
                   <Icon name="Phone" size={20} className="mr-3 text-muted-foreground" />
                   <div>
                     <p className="font-semibold">+7 (495) 123-45-67</p>
+                    <p className="text-muted-foreground">Администратор</p>
                   </div>
                 </div>
                 <div className="flex items-center">
                   <Icon name="Mail" size={20} className="mr-3 text-muted-foreground" />
                   <div>
                     <p className="font-semibold">info@aquazone.ru</p>
+                    <p className="text-muted-foreground">Общие вопросы</p>
                   </div>
                 </div>
               </CardContent>
@@ -356,21 +497,21 @@ const Index = () => {
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <Icon name="MessageSquare" size={24} className="mr-3 text-primary" />
-                  Связаться с нами
+                  Есть вопросы?
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <Label htmlFor="name">Имя</Label>
-                  <Input id="name" placeholder="Ваше имя" className="mt-2" />
+                  <Label htmlFor="contact-name">Имя</Label>
+                  <Input id="contact-name" placeholder="Ваше имя" className="mt-2" />
                 </div>
                 <div>
-                  <Label htmlFor="phone">Телефон</Label>
-                  <Input id="phone" placeholder="+7 (___) ___-__-__" className="mt-2" />
+                  <Label htmlFor="contact-phone">Телефон</Label>
+                  <Input id="contact-phone" placeholder="+7 (___) ___-__-__" className="mt-2" />
                 </div>
                 <div>
-                  <Label htmlFor="message">Сообщение</Label>
-                  <Input id="message" placeholder="Ваше сообщение" className="mt-2" />
+                  <Label htmlFor="contact-message">Сообщение</Label>
+                  <Input id="contact-message" placeholder="Опишите ваш вопрос" className="mt-2" />
                 </div>
                 <Button className="w-full bg-primary hover:bg-primary/90">
                   <Icon name="Send" size={16} className="mr-2" />
@@ -391,17 +532,29 @@ const Index = () => {
                 <Icon name="Waves" size={32} className="text-primary" />
                 <span className="text-2xl font-bold text-primary">AquaZone</span>
               </div>
-              <p className="text-slate-400">
-                Современный бассейн для здорового образа жизни и активного отдыха.
+              <p className="text-slate-400 mb-4">
+                Современный бассейн для здорового образа жизни и активного отдыха. 
+                Удобное бронирование онлайн.
               </p>
+              <div className="flex space-x-4">
+                <Button variant="ghost" size="sm" className="text-slate-400 hover:text-white">
+                  <Icon name="Instagram" size={20} />
+                </Button>
+                <Button variant="ghost" size="sm" className="text-slate-400 hover:text-white">
+                  <Icon name="Facebook" size={20} />
+                </Button>
+                <Button variant="ghost" size="sm" className="text-slate-400 hover:text-white">
+                  <Icon name="Twitter" size={20} />
+                </Button>
+              </div>
             </div>
             <div>
               <h3 className="text-lg font-semibold mb-4">Быстрые ссылки</h3>
               <div className="space-y-2">
+                <a href="#booking" className="block text-slate-400 hover:text-white transition-colors">Бронирование</a>
                 <a href="#services" className="block text-slate-400 hover:text-white transition-colors">Услуги</a>
-                <a href="#prices" className="block text-slate-400 hover:text-white transition-colors">Цены</a>
                 <a href="#gallery" className="block text-slate-400 hover:text-white transition-colors">Галерея</a>
-                <a href="#contacts" className="block text-slate-400 hover:text-white transition-colors">Контакты</a>
+                <a href="#contact" className="block text-slate-400 hover:text-white transition-colors">Контакты</a>
               </div>
             </div>
             <div>
@@ -410,6 +563,7 @@ const Index = () => {
                 <p>+7 (495) 123-45-67</p>
                 <p>info@aquazone.ru</p>
                 <p>г. Москва, ул. Спортивная, 15</p>
+                <p>Ежедневно: 6:00 - 23:00</p>
               </div>
             </div>
           </div>
